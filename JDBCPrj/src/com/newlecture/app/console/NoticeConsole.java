@@ -10,13 +10,24 @@ import com.newlecture.app.service.NoticeService;
 public class NoticeConsole {
 
 	private NoticeService service;
+	private int page;
+	private String searchField;
+	private String searchWord;
 	
 	public NoticeConsole() {
 		service=new NoticeService();
+		page=1;
+		searchField="TITLE";
+		searchWord="";
+		
 	}
 	
 	public void printNoticeList() throws ClassNotFoundException, SQLException {
-		List<Notice> list=service.getList();
+		List<Notice> list=service.getList(page,searchField,searchWord);
+		int count=service.getCount();
+		int lastPage=count/10; 
+		lastPage=count%10>0?lastPage+1:lastPage;
+		
 		
 		System.out.println("────────────────────────────────────");
 		System.out.printf("<공지사항> 총%d 게시글\n",12);
@@ -29,18 +40,52 @@ public class NoticeConsole {
 		}
 		
 		System.out.println("────────────────────────────────────");
-		System.out.printf("               %d/%d pages\n",1,2);
+		System.out.printf("               %d/%d pages\n",page,lastPage);
 	}
 
 	public int inputNoticeMenu() {
 		Scanner scan =new Scanner(System.in);
 		
-		System.out.print("1.상세조회/ 2.이전/ 3.다음/ 4.글쓰기 5.종료 >");
+		System.out.print("1.상세조회/ 2.이전/ 3.다음/ 4.글쓰기/ 5.검색/ 6.종료 >");
 		String menu_ = scan.nextLine();
 		int menu=Integer.parseInt(menu_);	//menu_를 int형식으로 변환
 		
 		return menu;
 
+	}
+
+	public void movePrevList() {
+		if(page==1) {
+			System.out.println("================");
+			System.out.println("이전페이지가 없습니다.");
+			System.out.println("================");
+			return;
+		}
+		page--;
+		
+	}
+
+	public void movNextList() throws ClassNotFoundException, SQLException {
+		int count=service.getCount();
+		int lastPage=count/10; 
+		lastPage=count%10>0?lastPage+1:lastPage;
+		if(page==lastPage) {
+			System.out.println("================");
+			System.out.println("이후페이지가 없습니다.");
+			System.out.println("================");
+			return;
+		}
+		page++;
+	}
+
+	public void inputSerchWord() {
+		Scanner scan =new Scanner(System.in);
+		System.out.println("검색 범주(title/content/writerId)중 하나를 입력하세요");
+		System.out.println(">");
+		searchField=scan.nextLine();
+		System.out.println("검색어 > ");
+		searchWord=scan.nextLine();
+		
 	}
 
 	

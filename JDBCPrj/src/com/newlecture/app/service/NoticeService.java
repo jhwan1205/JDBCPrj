@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.mysql.jdbc.Statement;
 import com.newlecture.app.entity.Notice;
 
 public class NoticeService {
@@ -17,13 +18,20 @@ public class NoticeService {
 	private String dbpasswd = "connect123!@#";
 	private String driver="com.mysql.jdbc.Driver";
 	
-	public List<Notice> getList() throws SQLException, ClassNotFoundException{
+	public List<Notice> getList(int page,String field, String query) throws SQLException, ClassNotFoundException{
 
-		String sql="SELECT * FROM (SELECT notice.*, @ROWNUM:=@ROWNUM+1 AS ROWNUM FROM notice, (SELECT @ROWNUM:=0) AS R) T LIMIT 0,10;";
+		int start=page*10-10;
+		int end=10;
+		
+		String sql="SELECT * FROM (SELECT notice.*, @ROWNUM:=@ROWNUM+1 AS ROWNUM FROM notice, (SELECT @ROWNUM:=0) AS R) T WHERE "+field+" LIKE ? LIMIT ?,?;";
 		Class.forName(driver);
 		Connection conn=DriverManager.getConnection(dburl,dbUser,dbpasswd);
 		PreparedStatement ps=conn.prepareStatement(sql);
-		ResultSet rs=ps.executeQuery(sql);
+		ps.setString(1,query);
+		ps.setInt(2, start);
+		ps.setInt(3, end);;
+
+		ResultSet rs=ps.executeQuery();
 		
 		List<Notice> list=new ArrayList<Notice>();
 		
@@ -50,6 +58,24 @@ public class NoticeService {
 		
 		
 		return list;
+	}
+	//Scalar
+	public int getCount() throws SQLException, ClassNotFoundException {
+		int count=0;
+		String sql="SELECT COUNT(id) count FROM notice";
+		Class.forName(driver);
+		Connection conn=DriverManager.getConnection(dburl,dbUser,dbpasswd);
+		Statement ps=(Statement) conn.createStatement();
+		ResultSet rs=ps.executeQuery(sql);
+		
+		if(rs.next())
+			count=rs.getInt("COUNT");
+
+		rs.close();
+		ps.close();
+		conn.close();	
+		
+		return count;
 	}
 	
 	public int insert(Notice notice) throws SQLException, ClassNotFoundException {
@@ -127,4 +153,7 @@ public class NoticeService {
 		conn.close();
 		return result;
 	}
+
+	
+
 }

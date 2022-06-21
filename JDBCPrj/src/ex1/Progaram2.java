@@ -8,8 +8,8 @@ import java.sql.SQLException;
 public class Progaram2 {	//DATA INSERT
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		String title="TEST2";
-		String writerId="newlc";
+		String title="BABO";
+		String writerId="sdsdsd";
 		String content="hahaha";
 		String files="";
 		

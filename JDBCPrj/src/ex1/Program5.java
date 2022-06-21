@@ -17,6 +17,8 @@ public class Program5 {
 			
 			switch(menu) {
 			case 1: //상세조회
+				console.detailData();
+				
 				break;
 			case 2: //이전
 				console.movePrevList();
@@ -27,6 +29,7 @@ public class Program5 {
 				//page++;
 				break;
 			case 4:	//글쓰기
+				console.insertData();
 				break;
 			case 5:	//검색
 				console.inputSerchWord();

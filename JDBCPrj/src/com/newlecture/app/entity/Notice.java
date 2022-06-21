@@ -20,8 +20,12 @@ public class Notice {
 		this.files = files;
 	}
 
-	public Notice() {
-		
+	public Notice(String title, String writerId, String content, String files) {
+		super();
+		this.title = title;
+		this.writerId = writerId;
+		this.content = content;
+		this.files = files;
 	}
 	
 
